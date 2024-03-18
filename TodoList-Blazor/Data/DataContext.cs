@@ -17,8 +17,8 @@ namespace TodoList_Blazor.Data
 		optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ToDoListDB;Trusted_Connection=True;MultipleActiveResultSets=true");
 	}
 
-	public DbSet<TodoList> Todolists { get; set; }
-	public DbSet<Cpr> Cprs { get; set; }
-	public DbSet<User> Users { get; set; }
+	public DbSet<TodoList> Todolist { get; set; }
+	public DbSet<Cpr> Cpr { get; set; }
+	public DbSet<User> User { get; set; }
 	}
 }
