@@ -3,6 +3,7 @@
 @using Microsoft.AspNetCore.Identity
 @using TodoList_Blazor.Components.Account
 @using TodoList_Blazor.Data
+@using TodoList_Blazor.Domain
 @using TodoList_Blazor.Services
 @using Microsoft.AspNetCore.Authorization
 
@@ -10,6 +11,11 @@
 @inject RoleHandler _roleHandler;
 @inject IServiceProvider _serviceProvider;
 @inject AuthenticationStateProvider GetAuthenticationStateAsync;
+@inject ICprService _cprService;
+@inject UserManager<ApplicationUser> _userManager;
+@inject IUserService _userService;
+@inject ICprService _cprService;
+@inject ITodoListService _todoListService;
 
 @attribute [Authorize(Policy = "AuthenticatedUser")]
 @* @attribute [Authorize(Roles = "Admin")] *@
@@ -32,8 +38,24 @@
 <h1>User: @username </h1>
 
 <div>
-	<InputText @bind-Value="cprInput" DisplayName="CPR NUMBER"></InputText>
-	<button @onclick="registerCPR">Sumbit</button>
+	@if (cprEnterned == false)
+	{
+		<InputText @bind-Value="cprInput" DisplayName="CPR NUMBER"></InputText>
+		<button @onclick="registerCPR">Sumbit</button>
+		<p>@errorMessage</p>
+	} else
+	{
+		<InputText @bind-Value="todoItemInput" DisplayName="TodoList"></InputText>
+		<button @onclick="addTodoItem">Add TodoList</button>
+
+		@foreach (var todo in todoLists)
+		{
+			<div>
+				<h1>@todo.Item</h1>
+			</div>
+		}
+	}
+
 </div>
 
 
@@ -44,19 +66,56 @@
 	// 	await _roleHandler.CreateUserRole("local@gmail.com", "admin", _serviceProvider);
 	// }
 	private string? username;
-
+	private string? errorMessage;
+	private List<TodoList> todoLists;
 	private string cprInput = "";
-
-
+	private string todoItemInput = "";
+	private bool cprEnterned = false;
+	private User currentUser = new User();
 	protected override async Task OnInitializedAsync()
 	{
 		var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
 		var user = authstate.User;
 		username = user.Identity.Name;
+		currentUser = _userService.getUserByUserName(username);
+		fetchTodoList(currentUser.Id);
 	}
 
 	public void registerCPR()
 	{
 		var cpr = cprInput;
+		var userCpr = _cprService.getCpr(currentUser);
+		if (userCpr != null)
+		{
+			if(cprInput == userCpr.CprNr)
+			{
+				cprEnterned = true;
+			} else
+			{
+				cprEnterned = false;
+				errorMessage = "Wrong Cpr Input!";
+			}
+		} else
+		{
+			_cprService.createCpr(cpr, currentUser);
+			cprEnterned = true;
+		}
+		cprInput = "";
+	}
+
+	private void fetchTodoList(int userId)
+	{
+		todoLists = _todoListService.getUserTodoLists(userId);
+	}
+
+	private void addTodoItem()
+	{
+		var todoItem = new TodoList();
+		todoItem.Item = todoItemInput;
+		todoItem.UserID = currentUser.Id;
+		todoLists.Add(todoItem);
+		_todoListService.createTodoList(todoItem);
+		todoItemInput = "";
+
 	}
 }

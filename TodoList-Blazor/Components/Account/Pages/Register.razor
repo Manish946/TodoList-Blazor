@@ -6,6 +6,7 @@
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.WebUtilities
 @using TodoList_Blazor.Data
+@using TodoList_Blazor.Services
 
 @inject UserManager<ApplicationUser> UserManager
 @inject IUserStore<ApplicationUser> UserStore
@@ -14,6 +15,7 @@
 @inject ILogger<Register> Logger
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
+@inject IUserService _userService;
 
 <PageTitle>Register</PageTitle>
 
@@ -73,7 +75,7 @@
         var emailStore = GetEmailStore();
         await emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
         var result = await UserManager.CreateAsync(user, Input.Password);
-
+        _userService.createUser(user, Input.Email);
         if (!result.Succeeded)
         {
             identityErrors = result.Errors;
