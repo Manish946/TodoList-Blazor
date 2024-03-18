@@ -1,17 +1,21 @@
 ﻿@page "/"
 
+@using Microsoft.AspNetCore.Identity
+@using TodoList_Blazor.Components.Account
+@using TodoList_Blazor.Data
 @using TodoList_Blazor.Services
 @using Microsoft.AspNetCore.Authorization
 
 @* Inject RoleHandler *@
 @inject RoleHandler _roleHandler;
 @inject IServiceProvider _serviceProvider;
+@inject AuthenticationStateProvider GetAuthenticationStateAsync;
 
 @attribute [Authorize(Policy = "AuthenticatedUser")]
-@attribute [Authorize(Roles = "Admin")]
+@* @attribute [Authorize(Roles = "Admin")] *@
 <PageTitle>Home</PageTitle>
 
-<AuthorizeView role="Admin">
+@* <AuthorizeView role="Admin">
 
 	<Authorized>
 		<h1>Hello, Admin!</h1>
@@ -23,7 +27,14 @@
 		<h1>Not Authorized</h1>
 	</NotAuthorized>
 
-</AuthorizeView>
+</AuthorizeView> *@
+
+<h1>User: @username </h1>
+
+<div>
+	<InputText @bind-Value="cprInput" DisplayName="CPR NUMBER"></InputText>
+	<button @onclick="registerCPR">Sumbit</button>
+</div>
 
 
 
@@ -32,4 +43,20 @@
 	// {
 	// 	await _roleHandler.CreateUserRole("local@gmail.com", "admin", _serviceProvider);
 	// }
+	private string? username;
+
+	private string cprInput = "";
+
+
+	protected override async Task OnInitializedAsync()
+	{
+		var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+		var user = authstate.User;
+		username = user.Identity.Name;
+	}
+
+	public void registerCPR()
+	{
+		var cpr = cprInput;
+	}
 }

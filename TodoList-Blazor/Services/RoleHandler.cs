@@ -10,7 +10,6 @@ namespace TodoList_Blazor.Services
 			// Call Manager
 			var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 			var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-
 			// Create Role in role table
 			var userRoleCheck = await roleManager.RoleExistsAsync(role);
 
