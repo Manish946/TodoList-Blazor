@@ -53,16 +53,43 @@
 	}
 	else
 	{
-		<InputText @bind-Value="todoItemInput" DisplayName="TodoList"></InputText>
-		<button @onclick="addTodoItem">Add TodoList</button>
+		<Card Style="width:42rem;">
+			<CardBody>
+				<div class="form-group row mb-3">
+					<div class="col-md-9">
+					<InputText class="form-control" @bind-Value="todoItemInput" DisplayName="TodoList"></InputText>
+					</div>
+					<Button class="col-md-3" @onclick="addTodoItem" Color="ButtonColor.Primary"> Add TodoList </Button>
 
-		@foreach (var todo in todoLists)
-		{
-			<div>
-				<h1>@todo.Item</h1>
-				<Button @onclick="(args) => deleteTodoItem(args, todo)" Color="ButtonColor.Danger"> Delete </Button>
-			</div>
-		}
+				</div>
+				<Card Style="width:40rem;" >
+					<CardHeader Color="CardColor.Dark" >
+						TO DO LISTS
+					</CardHeader>
+					<CardBody>
+						@if(todoLists.Count != 0)
+						{
+							@foreach (var todo in todoLists)
+							{
+								<Card Color="CardColor.Light" Class="mb-4">
+									<CardBody>
+										<CardTitle>@todo.Item</CardTitle>
+									</CardBody>
+									<CardFooter>
+										<Button @onclick="(args) => deleteTodoItem(args, todo)" Color="ButtonColor.Danger"> Delete </Button>
+
+									</CardFooter>
+								</Card>
+							}
+						} else
+						{
+							<CardText>TO DO LIST IS EMPTY</CardText>
+						}
+
+					</CardBody>
+				</Card>
+			</CardBody>
+		</Card>
 	}
 
 </div>
@@ -121,13 +148,15 @@
 
 	private void addTodoItem()
 	{
-		var todoItem = new TodoList();
-		todoItem.Item = todoItemInput;
-		todoItem.UserID = currentUser.Id;
-		todoLists.Add(todoItem);
-		_todoListService.createTodoList(todoItem);
-		todoItemInput = "";
-
+		if (todoItemInput != "")
+		{
+			var todoItem = new TodoList();
+			todoItem.Item = todoItemInput;
+			todoItem.UserID = currentUser.Id;
+			todoLists.Add(todoItem);
+			_todoListService.createTodoList(todoItem);
+			todoItemInput = "";
+		}
 	}
 
 	public void deleteTodoItem(EventArgs e, TodoList todolist)

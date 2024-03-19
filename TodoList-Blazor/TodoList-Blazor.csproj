@@ -10,6 +10,8 @@
     <RuntimeIdentifiers>linux-x64</RuntimeIdentifiers>
     <EnableSdkContainerDebugging>True</EnableSdkContainerDebugging>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <ContainerRepository>h5test</ContainerRepository>
+    <ContainerImageTag>v1</ContainerImageTag>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,9 +23,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ContainerEnvironmentVariable Include="ASPNETCORE_HTTPS_PORTS">
-      <Value>8081</Value>
-    </ContainerEnvironmentVariable>
+<ContainerPort Include="443" Type="tcp" />
+<ContainerEnvironmentVariable Include="ASPNETCORE_HTTPS_PORTS">
+<Value>8081</Value>
+</ContainerEnvironmentVariable>
+<ContainerEnvironmentVariable Include="ASPNETCORE_URLS">
+ <Value>https://+;http://+</Value>
+</ContainerEnvironmentVariable>
+<ContainerEnvironmentVariable Include="ASPNETCORE_Kestrel__Certificates__Default__Path">
+ <Value>/app/https/h5Test.pfx</Value>
+</ContainerEnvironmentVariable>
+<ContainerEnvironmentVariable Include="ASPNETCORE_Kestrel__Certificates__Default__Password">
+ <Value>manish</Value>
+</ContainerEnvironmentVariable>
   </ItemGroup>
 
 </Project>
