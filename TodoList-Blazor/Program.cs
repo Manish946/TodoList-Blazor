@@ -1,7 +1,11 @@
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
+using System.Security.Cryptography.X509Certificates;
 using TodoList_Blazor.Components;
 using TodoList_Blazor.Components.Account;
 using TodoList_Blazor.Data;
@@ -79,14 +83,14 @@ builder.Configuration.GetSection("Kestral:Endpoints:Https:Certificate:Path").Val
 string KastrelCertPassword = builder.Configuration.GetValue<string>("KastrelCertPassword");
 builder.Configuration.GetSection("Kestral:Endpoints:Https:Certificate:password").Value = KastrelCertPassword;
 
-builder.WebHost.UseKestrel((context, serverOptions) =>
-{
-	serverOptions.Configure(context.Configuration.GetSection("Kestral"))
-		.Endpoint("HTTPS", listenOptions =>
-		{
-			listenOptions.HttpsOptions.SslProtocols = System.Security.Authentication.SslProtocols.Tls13;
-		});
-});
+//builder.WebHost.UseKestrel((context, serverOptions) =>
+//{
+//	serverOptions.Configure(context.Configuration.GetSection("Kestral"))
+//		.Endpoint("HTTPS", listenOptions =>
+//		{
+//			listenOptions.HttpsOptions.SslProtocols = System.Security.Authentication.SslProtocols.Tls13;
+//		});
+//});
 
 var app = builder.Build();
 
