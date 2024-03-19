@@ -70,6 +70,13 @@ builder.Services.Configure<IdentityOptions>(options =>
 	options.Password.RequiredUniqueChars = 1;
 });
 
+// Get User Folder
+string userFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+userFolder = Path.Combine(userFolder, ".aspnet");
+userFolder = Path.Combine(userFolder, ".https");
+userFolder = Path.Combine(userFolder, ".h5test.pfx");
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
