@@ -41,11 +41,15 @@
 <div>
 	@if (cprEnterned == false)
 	{
-		<label class="form-label">ENTER YOUR CPR NUMBER</label>
-		<NumberInput TValue="long" @bind-Value="cprInput" Placeholder="TodoList" />
-		@* <input @bind-value="cprInput" Placeholder="TodoList"  /> *@
-		<button @onclick="registerCPR">Sumbit</button>
-		<p>@errorMessage</p>
+		<Card Style="width:29rem;">
+			<CardBody>
+				<label class="form-label">ENTER YOUR CPR NUMBER</label>
+				<NumberInput TValue="long" @bind-Value="cprInput" Placeholder="TodoList" />
+				@* <input @bind-value="cprInput" Placeholder="TodoList"  /> *@
+				<Button Style="margin-top:10px" @onclick="registerCPR" Color="ButtonColor.Primary"> Sumbit </Button>
+				<p>@errorMessage</p>
+			</CardBody>
+		</Card>
 	}
 	else
 	{
@@ -70,7 +74,7 @@
 	// {
 	// 	await _roleHandler.CreateUserRole("local@gmail.com", "admin", _serviceProvider);
 	// }
-	
+
 	private string? username;
 	private string? errorMessage;
 	private List<TodoList> todoLists;
@@ -126,7 +130,7 @@
 
 	}
 
-	public void deleteTodoItem(EventArgs e,TodoList todolist)
+	public void deleteTodoItem(EventArgs e, TodoList todolist)
 	{
 		todoLists.Remove(todolist);
 		_todoListService.deleteTodoList(todolist);

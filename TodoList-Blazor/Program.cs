@@ -76,6 +76,17 @@ userFolder = Path.Combine(userFolder, ".aspnet");
 userFolder = Path.Combine(userFolder, ".https");
 userFolder = Path.Combine(userFolder, ".h5test.pfx");
 builder.Configuration.GetSection("Kestral:Endpoints:Https:Certificate:Path").Value = userFolder;
+string KastrelCertPassword = builder.Configuration.GetValue<string>("KastrelCertPassword");
+builder.Configuration.GetSection("Kestral:Endpoints:Https:Certificate:password").Value = KastrelCertPassword;
+
+builder.WebHost.UseKestrel((context, serverOptions) =>
+{
+	serverOptions.Configure(context.Configuration.GetSection("Kestral"))
+		.Endpoint("HTTPS", listenOptions =>
+		{
+			listenOptions.HttpsOptions.SslProtocols = System.Security.Authentication.SslProtocols.Tls13;
+		});
+});
 
 var app = builder.Build();
 
