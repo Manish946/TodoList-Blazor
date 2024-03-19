@@ -42,7 +42,8 @@
 	@if (cprEnterned == false)
 	{
 		<label class="form-label">ENTER YOUR CPR NUMBER</label>
-		<NumberInput TValue="int" @bind-Value="cprInput" Placeholder="TodoList" />
+		@* <NumberInput TValue="string" @bind-Value="cprInput" Placeholder="TodoList" /> *@
+		<input @bind-value="cprInput" Placeholder="TodoList"  />
 		<button @onclick="registerCPR">Sumbit</button>
 		<p>@errorMessage</p>
 	}
@@ -73,7 +74,7 @@
 	private string? username;
 	private string? errorMessage;
 	private List<TodoList> todoLists;
-	private int cprInput;
+	private string cprInput = "";
 	private string todoItemInput = "";
 	private bool cprEnterned = false;
 	private User currentUser = new User();
@@ -107,7 +108,7 @@
 			_cprService.createCpr(cpr.ToString(), currentUser);
 			cprEnterned = true;
 		}
-		cprInput = new int();
+		cprInput = "";
 	}
 
 	private void fetchTodoList(int userId)
