@@ -5,8 +5,8 @@
 @using Microsoft.AspNetCore.WebUtilities
 @using System.Globalization
 @using System.Text.Encodings.Web
-@using QRCoder
 @using System.Drawing
+@using QRCoder
 @using TodoList_Blazor.Components.Account.Pages.Manage
 @using TodoList_Blazor.Data
 @using System.ComponentModel.DataAnnotations
@@ -89,7 +89,7 @@
 	{
 		QRCodeGenerator qrGenerator = new QRCodeGenerator();
 		QRCodeData qrCodeData = qrGenerator.CreateQrCode(uri, QRCodeGenerator.ECCLevel.Q);
-		PngByteQRCode qrCode = new PngByteQRCode(qrCodeData);
+		QRCode qrCode = new QRCode(qrCodeData);
 		// Generate QR CODE
 	}
 	private string FormatKey(string unformattedKey)
