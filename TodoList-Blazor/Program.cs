@@ -75,7 +75,7 @@ string userFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProf
 userFolder = Path.Combine(userFolder, ".aspnet");
 userFolder = Path.Combine(userFolder, ".https");
 userFolder = Path.Combine(userFolder, ".h5test.pfx");
-
+builder.Configuration.GetSection("Kestral:Endpoints:Https:Certificate:Path").Value = userFolder;
 
 var app = builder.Build();
 
