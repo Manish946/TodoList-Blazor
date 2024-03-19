@@ -7,5 +7,7 @@ namespace TodoList_Blazor.Services
 		List<TodoList> getUserTodoLists(int userId);
 
 		void createTodoList(TodoList item);
+
+		void deleteTodoList(TodoList item);
 	}
 }

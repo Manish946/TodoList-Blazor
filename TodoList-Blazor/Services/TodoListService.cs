@@ -23,5 +23,10 @@ namespace TodoList_Blazor.Services
 			_dataContext.SaveChanges();
 		}
 
+		public void deleteTodoList(TodoList item)
+		{
+			_dataContext.Todolist.Remove(item);
+			_dataContext.SaveChanges();
+		}
 	}
 }

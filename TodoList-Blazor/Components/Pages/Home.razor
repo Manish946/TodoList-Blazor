@@ -43,7 +43,8 @@
 		<InputText @bind-Value="cprInput" DisplayName="CPR NUMBER"></InputText>
 		<button @onclick="registerCPR">Sumbit</button>
 		<p>@errorMessage</p>
-	} else
+	}
+	else
 	{
 		<InputText @bind-Value="todoItemInput" DisplayName="TodoList"></InputText>
 		<button @onclick="addTodoItem">Add TodoList</button>
@@ -52,6 +53,8 @@
 		{
 			<div>
 				<h1>@todo.Item</h1>
+				<button @onclick="(args) => deleteTodoItem(args, todo)" style="background-color:red">delete</button>
+
 			</div>
 		}
 	}
@@ -87,15 +90,17 @@
 		var userCpr = _cprService.getCpr(currentUser);
 		if (userCpr != null)
 		{
-			if(cprInput == userCpr.CprNr)
+			if (cprInput == userCpr.CprNr)
 			{
 				cprEnterned = true;
-			} else
+			}
+			else
 			{
 				cprEnterned = false;
 				errorMessage = "Wrong Cpr Input!";
 			}
-		} else
+		}
+		else
 		{
 			_cprService.createCpr(cpr, currentUser);
 			cprEnterned = true;
@@ -117,5 +122,11 @@
 		_todoListService.createTodoList(todoItem);
 		todoItemInput = "";
 
+	}
+
+	public void deleteTodoItem(EventArgs e,TodoList todolist)
+	{
+		todoLists.Remove(todolist);
+		_todoListService.deleteTodoList(todolist);
 	}
 }
