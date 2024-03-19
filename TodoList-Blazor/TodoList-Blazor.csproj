@@ -9,9 +9,6 @@
     <AssemblyName>$(AssemblyName.Replace(' ', '_'))</AssemblyName>
     <RuntimeIdentifiers>linux-x64</RuntimeIdentifiers>
     <EnableSdkContainerDebugging>True</EnableSdkContainerDebugging>
-    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <ContainerRepository>h5test</ContainerRepository>
-    <ContainerImageTag>v1</ContainerImageTag>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,22 +17,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-<ContainerPort Include="443" Type="tcp" />
-<ContainerEnvironmentVariable Include="ASPNETCORE_HTTPS_PORTS">
-<Value>8081</Value>
-</ContainerEnvironmentVariable>
-<ContainerEnvironmentVariable Include="ASPNETCORE_URLS">
- <Value>https://+;http://+</Value>
-</ContainerEnvironmentVariable>
-<ContainerEnvironmentVariable Include="ASPNETCORE_Kestrel__Certificates__Default__Path">
- <Value>/app/https/h5Test.pfx</Value>
-</ContainerEnvironmentVariable>
-<ContainerEnvironmentVariable Include="ASPNETCORE_Kestrel__Certificates__Default__Password">
- <Value>manish</Value>
-</ContainerEnvironmentVariable>
+    <PackageReference Include="QRCoder" Version="1.4.3" />
+    <PackageReference Include="System.Drawing.Common" Version="8.0.3" />
   </ItemGroup>
 
 </Project>
