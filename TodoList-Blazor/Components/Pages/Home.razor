@@ -17,6 +17,7 @@
 @inject ICprService _cprService;
 @inject ITodoListService _todoListService;
 
+@attribute [Authorize]
 @attribute [Authorize(Policy = "AuthenticatedUser")]
 @* @attribute [Authorize(Roles = "Admin")] *@
 <PageTitle>Home</PageTitle>
@@ -40,7 +41,8 @@
 <div>
 	@if (cprEnterned == false)
 	{
-		<InputText @bind-Value="cprInput" DisplayName="CPR NUMBER"></InputText>
+		<label class="form-label">ENTER YOUR CPR NUMBER</label>
+		<NumberInput TValue="int" @bind-Value="cprInput" Placeholder="TodoList" />
 		<button @onclick="registerCPR">Sumbit</button>
 		<p>@errorMessage</p>
 	}
@@ -53,8 +55,7 @@
 		{
 			<div>
 				<h1>@todo.Item</h1>
-				<button @onclick="(args) => deleteTodoItem(args, todo)" style="background-color:red">delete</button>
-
+				<Button @onclick="(args) => deleteTodoItem(args, todo)" Color="ButtonColor.Danger"> Delete </Button>
 			</div>
 		}
 	}
@@ -68,10 +69,11 @@
 	// {
 	// 	await _roleHandler.CreateUserRole("local@gmail.com", "admin", _serviceProvider);
 	// }
+	
 	private string? username;
 	private string? errorMessage;
 	private List<TodoList> todoLists;
-	private string cprInput = "";
+	private int cprInput;
 	private string todoItemInput = "";
 	private bool cprEnterned = false;
 	private User currentUser = new User();
@@ -90,7 +92,7 @@
 		var userCpr = _cprService.getCpr(currentUser);
 		if (userCpr != null)
 		{
-			if (cprInput == userCpr.CprNr)
+			if (cprInput.ToString() == userCpr.CprNr)
 			{
 				cprEnterned = true;
 			}
@@ -102,10 +104,10 @@
 		}
 		else
 		{
-			_cprService.createCpr(cpr, currentUser);
+			_cprService.createCpr(cpr.ToString(), currentUser);
 			cprEnterned = true;
 		}
-		cprInput = "";
+		cprInput = new int();
 	}
 
 	private void fetchTodoList(int userId)

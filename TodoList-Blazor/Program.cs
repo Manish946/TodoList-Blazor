@@ -8,7 +8,7 @@ using TodoList_Blazor.Data;
 using TodoList_Blazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services.AddBlazorBootstrap();
 // Add services to the container.
 builder.Services.AddRazorComponents()
 	.AddInteractiveServerComponents();
