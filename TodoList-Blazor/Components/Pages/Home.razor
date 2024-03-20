@@ -124,7 +124,7 @@
 		var userCpr = _cprService.getCpr(currentUser);
 		if (userCpr != null)
 		{
-			if (cpr == userCpr.CprNr)
+			if (BCrypt.Net.BCrypt.EnhancedVerify(cpr, userCpr.CprNr))
 			{
 				cprEnterned = true;
 			}
@@ -136,7 +136,8 @@
 		}
 		else
 		{
-			_cprService.createCpr(cpr.ToString(), currentUser);
+			var hashedCpr = BCrypt.Net.BCrypt.EnhancedHashPassword(cpr, 13);
+			_cprService.createCpr(hashedCpr, currentUser);
 			cprEnterned = true;
 		}
 	}
