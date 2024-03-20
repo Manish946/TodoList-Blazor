@@ -124,7 +124,7 @@
 		var userCpr = _cprService.getCpr(currentUser);
 		if (userCpr != null)
 		{
-			if (BCrypt.Net.BCrypt.EnhancedVerify(cpr, userCpr.CprNr))
+			if (BCrypt.Net.BCrypt.EnhancedVerify(cpr, userCpr.CprNr, BCrypt.Net.HashType.SHA256))
 			{
 				cprEnterned = true;
 			}
