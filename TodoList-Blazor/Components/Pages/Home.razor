@@ -136,7 +136,8 @@
 		}
 		else
 		{
-			var hashedCpr = BCrypt.Net.BCrypt.EnhancedHashPassword(cpr, 13);
+			
+			var hashedCpr = BCrypt.Net.BCrypt.EnhancedHashPassword(cpr, BCrypt.Net.HashType.SHA256);
 			_cprService.createCpr(hashedCpr, currentUser);
 			cprEnterned = true;
 		}
