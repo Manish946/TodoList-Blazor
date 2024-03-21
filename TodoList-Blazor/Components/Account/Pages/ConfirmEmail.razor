@@ -6,7 +6,8 @@
 @using System.Globalization
 @using System.Text.Encodings.Web
 @using System.Drawing
-@using QRCoder
+@using SkiaSharp
+@using SkiaSharp.QrCode
 @using TodoList_Blazor.Components.Account.Pages.Manage
 @using TodoList_Blazor.Data
 @using System.ComponentModel.DataAnnotations
@@ -87,15 +88,26 @@
 
 	void GenerateQrImage(string uri)
 	{
-		QRCodeGenerator qrGenerator = new QRCodeGenerator();
-		QRCodeData qrCodeData = qrGenerator.CreateQrCode(uri, QRCodeGenerator.ECCLevel.Q);
-		QRCode qrCode = new QRCode(qrCodeData);
-		// Convert the image to base64 string
-		using MemoryStream ms = new();
-		using System.Drawing.Bitmap qrBitMap = qrCode.GetGraphic(20);
-		qrBitMap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-		string base64 = Convert.ToBase64String(ms.ToArray());
-		qrImageSource = string.Format("data:image/png;base64,{0}", base64);
+		using var generator = new QRCodeGenerator();
+		// Generate QrCode
+		var qr = generator.CreateQrCode(uri, ECCLevel.L);
+		// Render to canvas
+		var info = new SKImageInfo(300, 300);
+		using var surface = SKSurface.Create(info);
+		var canvas = surface.Canvas;
+		canvas.Render(qr, info.Width, info.Height);
+
+		// Output to Stream -> File
+		using var image = surface.Snapshot();
+		using var data = image.Encode(SKEncodedImageFormat.Png, 100);
+		Stream stream = data.AsStream();
+
+		using (var memoryStream = new MemoryStream())
+		{
+			stream.CopyTo(memoryStream);
+			var bytes = memoryStream.ToArray();
+			qrImageSource = $"data:image/png;base64,{Convert.ToBase64String(bytes)}";
+		}
 	}
 	private string FormatKey(string unformattedKey)
 	{
