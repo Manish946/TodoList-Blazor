@@ -9,6 +9,7 @@ using System.Security.Cryptography.X509Certificates;
 using TodoList_Blazor.Components;
 using TodoList_Blazor.Components.Account;
 using TodoList_Blazor.Data;
+using TodoList_Blazor.HelperServies;
 using TodoList_Blazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +23,7 @@ builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
 builder.Services.AddSingleton<RoleHandler>();
+builder.Services.AddSingleton<SymmetricHandler>();
 
 builder.Services.AddAuthentication(options =>
 	{

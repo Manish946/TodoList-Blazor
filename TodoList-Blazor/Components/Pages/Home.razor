@@ -35,65 +35,66 @@
 	</NotAuthorized>
 
 </AuthorizeView> *@
+<div class="">
+	<h1>User: @username </h1>
 
-<h1>User: @username </h1>
+	<div>
+		@if (cprEnterned == false)
+		{
+			<Card Style="width:29rem;">
+				<CardBody>
+					<label class="form-label">ENTER YOUR CPR NUMBER</label>
+					<NumberInput TValue="long" @bind-Value="cprInput" Placeholder="TodoList" />
+					@* <input @bind-value="cprInput" Placeholder="TodoList"  /> *@
+					<Button Style="margin-top:10px" @onclick="registerCPR" Color="ButtonColor.Primary"> Sumbit </Button>
+					<p>@errorMessage</p>
+				</CardBody>
+			</Card>
+		}
+		else
+		{
+			<Card Style="width:42rem;">
+				<CardBody>
+					<div class="form-group row mb-3">
+						<div class="col-md-9">
+							<InputText class="form-control" @bind-Value="todoItemInput" DisplayName="TodoList"></InputText>
+						</div>
+						<Button class="col-md-3" @onclick="addTodoItem" Color="ButtonColor.Primary"> Add TodoList </Button>
 
-<div>
-	@if (cprEnterned == false)
-	{
-		<Card Style="width:29rem;">
-			<CardBody>
-				<label class="form-label">ENTER YOUR CPR NUMBER</label>
-				<NumberInput TValue="long" @bind-Value="cprInput" Placeholder="TodoList" />
-				@* <input @bind-value="cprInput" Placeholder="TodoList"  /> *@
-				<Button Style="margin-top:10px" @onclick="registerCPR" Color="ButtonColor.Primary"> Sumbit </Button>
-				<p>@errorMessage</p>
-			</CardBody>
-		</Card>
-	}
-	else
-	{
-		<Card Style="width:42rem;">
-			<CardBody>
-				<div class="form-group row mb-3">
-					<div class="col-md-9">
-					<InputText class="form-control" @bind-Value="todoItemInput" DisplayName="TodoList"></InputText>
 					</div>
-					<Button class="col-md-3" @onclick="addTodoItem" Color="ButtonColor.Primary"> Add TodoList </Button>
-
-				</div>
-				<Card Style="width:40rem;" >
-					<CardHeader Color="CardColor.Dark" >
-						TO DO LISTS
-					</CardHeader>
-					<CardBody>
-						@if(todoLists.Count != 0)
-						{
-							@foreach (var todo in todoLists)
+					<Card Style="width:40rem;">
+						<CardHeader Color="CardColor.Dark">
+							TO DO LISTS
+						</CardHeader>
+						<CardBody>
+							@if (todoLists.Count != 0)
 							{
-								<Card Color="CardColor.Light" Class="mb-4">
-									<CardBody>
-										<CardTitle>@todo.Item</CardTitle>
-									</CardBody>
-									<CardFooter>
-										<Button @onclick="(args) => deleteTodoItem(args, todo)" Color="ButtonColor.Danger"> Delete </Button>
+								@foreach (var todo in todoLists)
+								{
+									<Card Color="CardColor.Light" Class="mb-4">
+										<CardBody>
+											<CardTitle>@todo.Item</CardTitle>
+										</CardBody>
+										<CardFooter>
+											<Button @onclick="(args) => deleteTodoItem(args, todo)" Color="ButtonColor.Danger"> Delete </Button>
 
-									</CardFooter>
-								</Card>
+										</CardFooter>
+									</Card>
+								}
 							}
-						} else
-						{
-							<CardText>TO DO LIST IS EMPTY</CardText>
-						}
+							else
+							{
+								<CardText>TO DO LIST IS EMPTY</CardText>
+							}
 
-					</CardBody>
-				</Card>
-			</CardBody>
-		</Card>
-	}
+						</CardBody>
+					</Card>
+				</CardBody>
+			</Card>
+		}
 
+	</div>
 </div>
-
 
 
 @code {
@@ -116,6 +117,8 @@
 		username = user.Identity.Name;
 		currentUser = _userService.getUserByUserName(username);
 		fetchTodoList(currentUser.Id);
+
+
 	}
 
 	public void registerCPR()
@@ -136,7 +139,7 @@
 		}
 		else
 		{
-			
+
 			var hashedCpr = BCrypt.Net.BCrypt.EnhancedHashPassword(cpr, BCrypt.Net.HashType.SHA256);
 			_cprService.createCpr(hashedCpr, currentUser);
 			cprEnterned = true;
