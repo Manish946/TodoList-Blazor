@@ -36,141 +36,196 @@
 
 </AuthorizeView> *@
 <div class="">
-	<h1>User: @username </h1>
+    <h1>User: @username </h1>
 
-	<div>
-		@if (cprEnterned == false)
-		{
-			<Card Style="width:29rem;">
-				<CardBody>
-					<label class="form-label">ENTER YOUR CPR NUMBER</label>
-					<NumberInput TValue="long" @bind-Value="cprInput" Placeholder="TodoList" />
-					@* <input @bind-value="cprInput" Placeholder="TodoList"  /> *@
-					<Button Style="margin-top:10px" @onclick="registerCPR" Color="ButtonColor.Primary"> Sumbit </Button>
-					<p>@errorMessage</p>
-				</CardBody>
-			</Card>
-		}
-		else
-		{
-			<Card Style="width:42rem;">
-				<CardBody>
-					<div class="form-group row mb-3">
-						<div class="col-md-9">
-							<InputText class="form-control" @bind-Value="todoItemInput" DisplayName="TodoList"></InputText>
-						</div>
-						<Button class="col-md-3" @onclick="addTodoItem" Color="ButtonColor.Primary"> Add TodoList </Button>
+    <div>
+        @if (cprEnterned == false)
+        {
+            <Card Style="width:29rem;">
+                <CardBody>
+                    <label class="form-label">ENTER YOUR CPR NUMBER</label>
+                    <NumberInput TValue="long" @bind-Value="cprInput" Placeholder="TodoList" />
+                    @* <input @bind-value="cprInput" Placeholder="TodoList"  /> *@
+                    <Button Style="margin-top:10px" @onclick="registerCPR" Color="ButtonColor.Primary"> Sumbit </Button>
+                    <p>@errorMessage</p>
+                </CardBody>
+            </Card>
+        }
+        else
+        {
+            <Card Style="width:42rem;">
+                <CardBody>
+                    <div class="form-group row mb-3">
+                        <div class="col-md-9">
+                            <InputText class="form-control" @bind-Value="todoItemInput" @onkeyup="addTodoItem" DisplayName=" TodoList"></InputText>
+                        </div>
+                        <Button class="col-md-3" @onclick="addTodoItem" Color="ButtonColor.Primary"> Add TodoList </Button>
 
-					</div>
-					<Card Style="width:40rem;">
-						<CardHeader Color="CardColor.Dark">
-							TO DO LISTS
-						</CardHeader>
-						<CardBody>
-							@if (todoLists.Count != 0)
-							{
-								@foreach (var todo in todoLists)
-								{
-									<Card Color="CardColor.Light" Class="mb-4">
-										<CardBody>
-											<CardTitle>@todo.Item</CardTitle>
-											<InputText @bind-Value="todo.Item" DisplayName="TodoList" class="form-control"></InputText>
-										</CardBody>
-										<CardFooter>
-											<Button @onclick="(args) => deleteTodoItem(args, todo)" Color="ButtonColor.Danger"> Delete </Button>
-											<Button @onclick="(args) => updateTodoItem(args, todo)" Color="ButtonColor.Info"> Edit </Button>
+                    </div>
+                    <Card Style="width:40rem;">
+                        <CardHeader Color="CardColor.Dark">
+                            TO DO LISTS
+                        </CardHeader>
+                        <CardBody>
+                            @if (todoLists.Count != 0)
+                            {
+                                @foreach (var todo in todoLists)
+                                {
+                                    <Card Color="CardColor.Light" Class="mb-4">
+                                        @if (editIndex == todoLists.IndexOf(todo))
+                                        {
+                                            <CardBody>
+                                                <InputText @bind-Value="todo.Item" DisplayName="TodoList" class="form-control"></InputText>
+                                            </CardBody>
+                                            <CardFooter>
+                                                <Button @onclick="(args) => deleteTodoItem(todo)" Color="ButtonColor.Danger"> Delete </Button>
+                                                <Button @onclick="(args) => updateTodoItem(todo)" Color="ButtonColor.Info"> Save </Button>
 
-										</CardFooter>
-									</Card>
-								}
-							}
-							else
-							{
-								<CardText>TO DO LIST IS EMPTY</CardText>
-							}
+                                                @if (!todo.IsCompleted)
+                                                {
+                                                    <Button @onclick="(args) => toggleTodoItemCompeleted(todo)" Color="ButtonColor.Warning">Complete</Button>
+                                                }
+                                                else
+                                                {
+                                                    <Button @onclick="(args) => toggleTodoItemCompeleted(todo)" Color="ButtonColor.Success">Completed</Button>
+                                                }
+                                            </CardFooter>
+                                        }
+                                        else
+                                        {
+                                            <CardBody>
+                                                @if (todo.IsCompleted)
+                                                {
+                                                    <CardTitle><s>@todo.Item</s> </CardTitle>
+                                                }
+                                                else
+                                                {
+                                                    <CardTitle>@todo.Item</CardTitle>
+                                                }
+                                            </CardBody>
+                                            <CardFooter>
+                                                <Button @onclick="(args) => deleteTodoItem(todo)" Color="ButtonColor.Danger"> Delete </Button>
+                                                <Button @onclick="(args) => enableEdit(todoLists.IndexOf(todo))" Color="ButtonColor.Info"> Edit </Button>
 
-						</CardBody>
-					</Card>
-				</CardBody>
-			</Card>
-		}
+                                                @if (!todo.IsCompleted)
+                                                {
+                                                    <Button @onclick="(args) => toggleTodoItemCompeleted(todo)" Color="ButtonColor.Warning">Complete</Button>
+                                                }
+                                                else
+                                                {
+                                                    <Button @onclick="(args) => toggleTodoItemCompeleted(todo)" Color="ButtonColor.Success">Completed</Button>
+                                                }
+                                            </CardFooter>
+                                        }
+                                    </Card>
+                                }
+                            }
+                            else
+                            {
+                                <CardText>TO DO LIST IS EMPTY</CardText>
+                            }
 
-	</div>
+                        </CardBody>
+                    </Card>
+                </CardBody>
+            </Card>
+        }
+    </div>
 </div>
 
 
 @code {
-	// protected override async Task OnInitializedAsync()
-	// {
-	// 	await _roleHandler.CreateUserRole("local@gmail.com", "admin", _serviceProvider);
-	// }
+    // protected override async Task OnInitializedAsync()
+    // {
+    // 	await _roleHandler.CreateUserRole("local@gmail.com", "admin", _serviceProvider);
+    // }
 
-	private string? username;
-	private string? errorMessage;
-	private List<TodoList> todoLists;
-	private long cprInput;
-	private string todoItemInput = "";
-	private bool cprEnterned = false;
-	private User currentUser = new User();
-	protected override async Task OnInitializedAsync()
-	{
-		var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
-		var user = authstate.User;
-		username = user.Identity.Name;
-		currentUser = _userService.getUserByUserName(username);
-		fetchTodoList(currentUser.Id);
-	}
+    private string? username;
+    private string? errorMessage;
+    private List<TodoList> todoLists;
+    private long cprInput;
+    private string todoItemInput = "";
+    private bool cprEnterned = false;
+    private User currentUser = new User();
+    private int editIndex = -1;
+    protected override async Task OnInitializedAsync()
+    {
+        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+        var user = authstate.User;
+        username = user.Identity.Name;
+        currentUser = _userService.getUserByUserName(username);
+        fetchTodoList(currentUser.Id);
+    }
 
-	public void registerCPR()
-	{
-		string cpr = cprInput.ToString();
-		var userCpr = _cprService.getCpr(currentUser);
-		if (userCpr != null)
-		{
-			if (BCrypt.Net.BCrypt.EnhancedVerify(cpr, userCpr.CprNr, BCrypt.Net.HashType.SHA256))
-			{
-				cprEnterned = true;
-			}
-			else
-			{
-				cprEnterned = false;
-				errorMessage = "Wrong Cpr Input!";
-			}
-		}
-		else
-		{
-			var hashedCpr = BCrypt.Net.BCrypt.EnhancedHashPassword(cpr, BCrypt.Net.HashType.SHA256);
-			_cprService.createCpr(hashedCpr, currentUser);
-			cprEnterned = true;
-		}
-	}
+    public void registerCPR()
+    {
+        string cpr = cprInput.ToString();
+        var userCpr = _cprService.getCpr(currentUser);
+        if (userCpr != null)
+        {
+            if (BCrypt.Net.BCrypt.EnhancedVerify(cpr, userCpr.CprNr, BCrypt.Net.HashType.SHA256))
+            {
+                cprEnterned = true;
+            }
+            else
+            {
+                cprEnterned = false;
+                errorMessage = "Wrong Cpr Input!";
+            }
+        }
+        else
+        {
+            var hashedCpr = BCrypt.Net.BCrypt.EnhancedHashPassword(cpr, BCrypt.Net.HashType.SHA256);
+            _cprService.createCpr(hashedCpr, currentUser);
+            cprEnterned = true;
+        }
+    }
 
-	private void fetchTodoList(int userId)
-	{
-		todoLists = _todoListService.getUserTodoLists(userId);
-	}
+    private void fetchTodoList(int userId)
+    {
+        todoLists = _todoListService.getUserTodoLists(userId);
+    }
 
-	private void addTodoItem()
-	{
-		if (todoItemInput != "")
-		{
-			var todoItem = new TodoList();
-			todoItem.Item = todoItemInput;
-			todoItem.UserID = currentUser.Id;
-			todoLists.Add(todoItem);
-			_todoListService.createTodoList(todoItem);
-			todoItemInput = "";
-		}
-	}
+    private void addTodoItem()
+    {
+        if (todoItemInput != "")
+        {
+            var todoItem = new TodoList();
+            todoItem.Item = todoItemInput;
+            todoItem.UserID = currentUser.Id;
+            todoLists.Add(todoItem);
+            _todoListService.createTodoList(todoItem);
+            todoItemInput = "";
+        }
+    }
 
-	public void deleteTodoItem(EventArgs e, TodoList todolist)
-	{
-		todoLists.Remove(todolist);
-		_todoListService.deleteTodoList(todolist);
-	}
+    private void deleteTodoItem(TodoList todolist)
+    {
+        todoLists.Remove(todolist);
+        _todoListService.deleteTodoList(todolist);
+    }
 
-	public void updateTodoItem(EventArgs e, TodoList todolist)
-	{
-		_todoListService.updateTodoList(todolist);
-	}
+    private void updateTodoItem(TodoList todolist)
+    {
+        _todoListService.updateTodoList(todolist);
+        editIndex = -1;
+    }
+
+    private void enableEdit(int index)
+    {
+        editIndex = index;
+    }
+
+    private void toggleTodoItemCompeleted(TodoList todolist)
+    {
+        if (todolist.IsCompleted)
+        {
+            todolist.IsCompleted = false;
+        }
+        else
+        {
+            todolist.IsCompleted = true;
+        }
+        _todoListService.updateTodoList(todolist);
+    }
 }

@@ -4,6 +4,7 @@
 	{
 		public int Id { get; set; }
 		public string Item { get; set; }
+		public bool IsCompleted { get; set; }
 
 		public int UserID { get; set; }
 		public User User { get; set; }
