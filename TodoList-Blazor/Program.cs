@@ -24,6 +24,7 @@ builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
 builder.Services.AddSingleton<RoleHandler>();
 builder.Services.AddSingleton<SymmetricHandler>();
+builder.Services.AddSingleton<AsymmetricHandler>();
 
 builder.Services.AddAuthentication(options =>
 	{

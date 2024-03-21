@@ -9,5 +9,6 @@ namespace TodoList_Blazor.Services
 		void createTodoList(TodoList item);
 
 		void deleteTodoList(TodoList item);
+		void updateTodoList(TodoList item);
 	}
 }

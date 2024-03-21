@@ -74,9 +74,11 @@
 									<Card Color="CardColor.Light" Class="mb-4">
 										<CardBody>
 											<CardTitle>@todo.Item</CardTitle>
+											<InputText @bind-Value="todo.Item" DisplayName="TodoList" class="form-control"></InputText>
 										</CardBody>
 										<CardFooter>
 											<Button @onclick="(args) => deleteTodoItem(args, todo)" Color="ButtonColor.Danger"> Delete </Button>
+											<Button @onclick="(args) => updateTodoItem(args, todo)" Color="ButtonColor.Info"> Edit </Button>
 
 										</CardFooter>
 									</Card>
@@ -117,8 +119,6 @@
 		username = user.Identity.Name;
 		currentUser = _userService.getUserByUserName(username);
 		fetchTodoList(currentUser.Id);
-
-
 	}
 
 	public void registerCPR()
@@ -139,7 +139,6 @@
 		}
 		else
 		{
-
 			var hashedCpr = BCrypt.Net.BCrypt.EnhancedHashPassword(cpr, BCrypt.Net.HashType.SHA256);
 			_cprService.createCpr(hashedCpr, currentUser);
 			cprEnterned = true;
@@ -168,5 +167,10 @@
 	{
 		todoLists.Remove(todolist);
 		_todoListService.deleteTodoList(todolist);
+	}
+
+	public void updateTodoItem(EventArgs e, TodoList todolist)
+	{
+		_todoListService.updateTodoList(todolist);
 	}
 }

@@ -28,5 +28,15 @@ namespace TodoList_Blazor.Services
 			_dataContext.Todolist.Remove(item);
 			_dataContext.SaveChanges();
 		}
+
+		public void updateTodoList(TodoList item)
+		{
+			var existedTodoList = _dataContext.Todolist.Where(todoList => todoList.Id == item.Id).FirstOrDefault();
+			if (existedTodoList != null)
+			{
+				_dataContext.Todolist.Update(item);
+				_dataContext.SaveChanges();
+			}
+		}
 	}
 }
