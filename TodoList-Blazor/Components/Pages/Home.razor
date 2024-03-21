@@ -2,6 +2,7 @@
 
 @using Microsoft.AspNetCore.Identity
 @using TodoList_Blazor.Components.Account
+@using TodoList_Blazor.Components.TodoList_Componenets
 @using TodoList_Blazor.Data
 @using TodoList_Blazor.Domain
 @using TodoList_Blazor.HelperServies
@@ -71,7 +72,7 @@
                                         @if (editIndex == todoLists.IndexOf(todo))
                                         {
                                             <CardBody>
-                                                <InputText @bind-Value="todo.Item" DisplayName="TodoList" class="form-control"></InputText>
+                                                <DecryptedInput EncryptedValue="@todo.Item" ValueChanged="(newValue) => todo.Item = newValue" />
                                             </CardBody>
                                             <CardFooter>
                                                 <Button @onclick="(args) => deleteTodoItem(todo)" Color="ButtonColor.Danger"> Delete </Button>
@@ -102,7 +103,6 @@
                                             <CardFooter>
                                                 <Button @onclick="(args) => deleteTodoItem(todo)" Color="ButtonColor.Danger"> Delete </Button>
                                                 <Button @onclick="(args) => enableEdit(todoLists.IndexOf(todo))" Color="ButtonColor.Info"> Edit </Button>
-
                                                 @if (!todo.IsCompleted)
                                                 {
                                                     <Button @onclick="(args) => toggleTodoItemCompeleted(todo)" Color="ButtonColor.Warning">Complete</Button>
@@ -212,6 +212,7 @@
 
     private void updateTodoItem(TodoList todolist)
     {
+        todolist.Item = _asymmetricHandler.EncryptAsymmetric(todolist.Item);
         _todoListService.updateTodoList(todolist);
         editIndex = -1;
     }
