@@ -1,5 +1,7 @@
 ﻿using System.Security.Cryptography.X509Certificates;
 using System.Security.Cryptography;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Text;
 
 namespace TodoList_Blazor.HelperServies
 {
@@ -13,10 +15,11 @@ namespace TodoList_Blazor.HelperServies
 		{
 			using (RSACryptoServiceProvider RSA = new RSACryptoServiceProvider())
 			{
-				RSA.FromXmlString(publicKey);
-				byte[] bytes = System.Text.Encoding.UTF8.GetBytes(textToEncrypt);
-				return Convert.ToBase64String(RSA.Encrypt(bytes, false));
-			}
+                RSA.FromXmlString(publicKey);
+                byte[] dataBytes = Encoding.UTF8.GetBytes(textToEncrypt);
+                byte[] encryptedData = RSA.Encrypt(dataBytes, true);
+                return Convert.ToBase64String(encryptedData);
+            }
 		}
 
 	}

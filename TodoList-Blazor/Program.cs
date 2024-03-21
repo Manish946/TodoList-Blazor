@@ -22,9 +22,18 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
+builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ITodoListService, TodoListService>();
+builder.Services.AddScoped<ICprService, CprService>();
+builder.Services.AddScoped<IPrivateKeyStorageService, PrivateKeyStorageService>();
 builder.Services.AddSingleton<RoleHandler>();
 builder.Services.AddSingleton<SymmetricHandler>();
-builder.Services.AddSingleton<AsymmetricHandler>();
+builder.Services.AddScoped<AsymmetricHandler>(serviceProvider =>
+{
+    var privateKeyStorageService = serviceProvider.GetRequiredService<IPrivateKeyStorageService>();
+    return new AsymmetricHandler(privateKeyStorageService);
+});
 
 builder.Services.AddAuthentication(options =>
 	{
@@ -45,11 +54,6 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
 	.AddEntityFrameworkStores<ApplicationDbContext>()
 	.AddSignInManager()
 	.AddDefaultTokenProviders();
-
-builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<ITodoListService, TodoListService>();
-builder.Services.AddScoped<ICprService, CprService>();
 
 builder.Services.AddAuthorization(options =>
 {

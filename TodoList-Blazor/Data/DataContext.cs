@@ -20,5 +20,6 @@ namespace TodoList_Blazor.Data
 	public DbSet<TodoList> Todolist { get; set; }
 	public DbSet<Cpr> Cpr { get; set; }
 	public DbSet<User> User { get; set; }
-	}
+	public DbSet<PrivateKeyStorage> PrivateKeyStorage { get; set; }
+    }
 }

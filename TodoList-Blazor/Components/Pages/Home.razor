@@ -4,6 +4,7 @@
 @using TodoList_Blazor.Components.Account
 @using TodoList_Blazor.Data
 @using TodoList_Blazor.Domain
+@using TodoList_Blazor.HelperServies
 @using TodoList_Blazor.Services
 @using Microsoft.AspNetCore.Authorization
 
@@ -15,6 +16,7 @@
 @inject ICprService _cprService;
 @inject ITodoListService _todoListService;
 @inject RoleHandler _roleHandler;
+@inject AsymmetricHandler _asymmetricHandler;
 @inject IServiceProvider _serviceProvider;
 
 @attribute [Authorize]
@@ -90,11 +92,11 @@
                                             <CardBody>
                                                 @if (todo.IsCompleted)
                                                 {
-                                                    <CardTitle><s>@todo.Item</s> </CardTitle>
+                                                    <CardTitle><s>@decryptTodoItem(todo)</s> </CardTitle>
                                                 }
                                                 else
                                                 {
-                                                    <CardTitle>@todo.Item</CardTitle>
+                                                    <CardTitle>@decryptTodoItem(todo)</CardTitle>
                                                 }
                                             </CardBody>
                                             <CardFooter>
@@ -188,12 +190,18 @@
         if (todoItemInput != "")
         {
             var todoItem = new TodoList();
-            todoItem.Item = todoItemInput;
             todoItem.UserID = currentUser.Id;
             todoLists.Add(todoItem);
+            var encryptedItem = _asymmetricHandler.EncryptAsymmetric(todoItemInput);
+            todoItem.Item = encryptedItem;
             _todoListService.createTodoList(todoItem);
             todoItemInput = "";
         }
+    }
+
+    private string decryptTodoItem(TodoList todolist)
+    {
+        return _asymmetricHandler.DecryptAsymmetric(todolist.Item);
     }
 
     private void deleteTodoItem(TodoList todolist)
