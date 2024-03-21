@@ -44,10 +44,10 @@
             <Card Style="width:29rem;">
                 <CardBody>
                     <label class="form-label">ENTER YOUR CPR NUMBER</label>
-                    <NumberInput TValue="long" @bind-Value="cprInput" Placeholder="TodoList" />
+                    <NumberInput TValue="long?" @bind-Value="cprInput" Placeholder="CPR NUMBER" />
                     @* <input @bind-value="cprInput" Placeholder="TodoList"  /> *@
                     <Button Style="margin-top:10px" @onclick="registerCPR" Color="ButtonColor.Primary"> Sumbit </Button>
-                    <p>@errorMessage</p>
+                    <p style="margin-top:10px">@errorMessage</p>
                 </CardBody>
             </Card>
         }
@@ -57,7 +57,7 @@
                 <CardBody>
                     <div class="form-group row mb-3">
                         <div class="col-md-9">
-                            <InputText class="form-control" @bind-Value="todoItemInput" @onkeyup="addTodoItem" DisplayName=" TodoList"></InputText>
+                            <InputText class="form-control" @bind-Value="todoItemInput" @onkeyup="addTodoItem" DisplayName=" TO DO LIST ITEM"></InputText>
                         </div>
                         <Button class="col-md-3" @onclick="addTodoItem" Color="ButtonColor.Primary"> Add TodoList </Button>
 
@@ -143,7 +143,7 @@
     private string? username;
     private string? errorMessage;
     private List<TodoList> todoLists;
-    private long cprInput;
+    private long? cprInput = null;
     private string todoItemInput = "";
     private bool cprEnterned = false;
     private User currentUser = new User();
