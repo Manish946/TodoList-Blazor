@@ -16,6 +16,9 @@
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
 @inject IUserService _userService;
+@inject RoleHandler _roleHandler;
+@inject IServiceProvider _serviceProvider;
+
 
 <PageTitle>Register</PageTitle>
 
@@ -44,6 +47,12 @@
                 <label for="confirm-password">Confirm Password</label>
                 <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
             </div>
+            <div class="form-floating mb-3">
+                <div class="col-md-10">
+                    <Switch Class="mt-2" @bind-Value="isAdmin" Label="Admin Role" />
+                </div>
+            </div>
+
             <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
         </EditForm>
     </div>
@@ -66,11 +75,12 @@
     private string? ReturnUrl { get; set; }
 
     private string? Message => identityErrors is null ? null : $"Error: {string.Join(", ", identityErrors.Select(error => error.Description))}";
+    private bool isAdmin = true;
 
     public async Task RegisterUser(EditContext editContext)
     {
         var user = CreateUser();
-        user.TwoFactorEnabled = true;
+        user.TwoFactorEnabled = false;
 
         await UserStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
         var emailStore = GetEmailStore();
@@ -81,6 +91,15 @@
         {
             identityErrors = result.Errors;
             return;
+        }
+        if (isAdmin)
+        {
+            await _roleHandler.CreateUserRole(user.Email, "admin", _serviceProvider);
+
+        } else
+        {
+            await _roleHandler.CreateUserRole(user.Email, "member", _serviceProvider);
+
         }
 
         Logger.LogInformation("User created a new account with password.");

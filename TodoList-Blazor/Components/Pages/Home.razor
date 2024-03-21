@@ -8,35 +8,30 @@
 @using Microsoft.AspNetCore.Authorization
 
 @* Inject RoleHandler *@
-@inject RoleHandler _roleHandler;
-@inject IServiceProvider _serviceProvider;
 @inject AuthenticationStateProvider GetAuthenticationStateAsync;
 @inject ICprService _cprService;
 @inject UserManager<ApplicationUser> _userManager;
 @inject IUserService _userService;
 @inject ICprService _cprService;
 @inject ITodoListService _todoListService;
+@inject RoleHandler _roleHandler;
+@inject IServiceProvider _serviceProvider;
 
 @attribute [Authorize]
 @attribute [Authorize(Policy = "AuthenticatedUser")]
 @* @attribute [Authorize(Roles = "Admin")] *@
 <PageTitle>Home</PageTitle>
 
-@* <AuthorizeView role="Admin">
-
-	<Authorized>
-		<h1>Hello, Admin!</h1>
-
-		Welcome to your new app.
-	</Authorized>
-
-	<NotAuthorized>
-		<h1>Not Authorized</h1>
-	</NotAuthorized>
-
-</AuthorizeView> *@
-<div class="">
+<div>
     <h1>User: @username </h1>
+    @if (isAdmin)
+    {
+        <h1>Admin</h1>
+    }
+    else
+    {
+        <h1>Member</h1>
+    }
 
     <div>
         @if (cprEnterned == false)
@@ -45,9 +40,8 @@
                 <CardBody>
                     <label class="form-label">ENTER YOUR CPR NUMBER</label>
                     <NumberInput TValue="long?" @bind-Value="cprInput" Placeholder="CPR NUMBER" />
-                    @* <input @bind-value="cprInput" Placeholder="TodoList"  /> *@
                     <Button Style="margin-top:10px" @onclick="registerCPR" Color="ButtonColor.Primary"> Sumbit </Button>
-                    <p style="margin-top:10px">@errorMessage</p>
+                    <p style="margin-top:10px; color:red">@errorMessage</p>
                 </CardBody>
             </Card>
         }
@@ -129,16 +123,17 @@
                     </Card>
                 </CardBody>
             </Card>
+
+            @if (isAdmin)
+            {
+                <Button Style="margin-top:10px" @onclick="clearAll" Color="ButtonColor.Danger">Clear All To do List</Button>
+            }
         }
     </div>
 </div>
 
 
 @code {
-    // protected override async Task OnInitializedAsync()
-    // {
-    // 	await _roleHandler.CreateUserRole("local@gmail.com", "admin", _serviceProvider);
-    // }
 
     private string? username;
     private string? errorMessage;
@@ -148,10 +143,12 @@
     private bool cprEnterned = false;
     private User currentUser = new User();
     private int editIndex = -1;
+    private bool isAdmin = false;
     protected override async Task OnInitializedAsync()
     {
         var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
         var user = authstate.User;
+        isAdmin = user.IsInRole("admin");
         username = user.Identity.Name;
         currentUser = _userService.getUserByUserName(username);
         fetchTodoList(currentUser.Id);
@@ -227,5 +224,11 @@
             todolist.IsCompleted = true;
         }
         _todoListService.updateTodoList(todolist);
+    }
+
+    private void clearAll()
+    {
+        todoLists.Clear();
+        _todoListService.clearAllTodoList();
     }
 }

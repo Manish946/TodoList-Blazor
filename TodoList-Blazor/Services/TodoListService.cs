@@ -38,5 +38,12 @@ namespace TodoList_Blazor.Services
 				_dataContext.SaveChanges();
 			}
 		}
-	}
+
+        public void clearAllTodoList()
+        {
+            // clear database table
+            _dataContext.Todolist.RemoveRange(_dataContext.Todolist);
+            _dataContext.SaveChanges();
+        }
+    }
 }

@@ -64,6 +64,11 @@ builder.Services.AddAuthorization(options =>
 	{
 		policy.RequireRole("Admin");
 	});
+
+    options.AddPolicy("RequireMemberRole", policy =>
+    {
+        policy.RequireRole("Member");
+    });
 });
 
 builder.Services.Configure<IdentityOptions>(options =>
