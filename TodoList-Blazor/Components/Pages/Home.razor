@@ -34,7 +34,7 @@
     }
 
     <div>
-        @if (cprEnterned == false)
+        @if (cprEntered == false)
         {
             <Card Style="width:29rem;">
                 <CardBody>
@@ -96,11 +96,11 @@
 
                                             @if (!todo.IsCompleted)
                                             {
-                                                <Button Class="mr-5" @onclick="(args) => toggleTodoItemCompeleted(todo)" Color="ButtonColor.Warning">Complete</Button>
+                                                <Button Class="mr-5" @onclick="(args) => toggleTodoItemCompleted(todo)" Color="ButtonColor.Warning">Complete</Button>
                                             }
                                             else
                                             {
-                                                <Button Class="mr-5" @onclick="(args) => toggleTodoItemCompeleted(todo)" Color="ButtonColor.Success">Completed</Button>
+                                                <Button Class="mr-5" @onclick="(args) => toggleTodoItemCompleted(todo)" Color="ButtonColor.Success">Completed</Button>
                                             }
                                         </CardFooter>
                                     </Card>
