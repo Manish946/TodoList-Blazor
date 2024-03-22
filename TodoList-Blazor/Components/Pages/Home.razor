@@ -9,6 +9,8 @@
 @using TodoList_Blazor.Services
 @using Microsoft.AspNetCore.Authorization
 
+@rendermode InteractiveServer
+
 @* Inject RoleHandler *@
 @inject AuthenticationStateProvider GetAuthenticationStateAsync;
 @inject ICprService _cprService;
@@ -145,6 +147,11 @@
     private User currentUser = new User();
     private int editIndex = -1;
     private bool isAdmin = false;
+    private bool IsAdmin = true;
+    private void OnAdminCheckboxChanged(ChangeEventArgs e)
+    {
+        IsAdmin = (bool)e.Value;
+    }
 
     protected override async Task OnInitializedAsync()
     {

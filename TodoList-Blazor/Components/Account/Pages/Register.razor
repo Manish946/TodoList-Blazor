@@ -21,7 +21,6 @@
 
 
 <PageTitle>Register</PageTitle>
-
 <h1>Register</h1>
 
 <div class="row">
@@ -47,14 +46,15 @@
                 <label for="confirm-password">Confirm Password</label>
                 <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
             </div>
-            <div class="form-floating mb-3">
-                <div class="col-md-10">
-                    <Switch Class="mt-2" @bind-Value="isAdmin" Label="Admin Role" />
-                </div>
+            <div class="checkbox mb-3">
+                <label class="form-label">
+                    <InputCheckbox @bind-Value="Input.IsAdmin" class="darker-border-checkbox form-check-input" />
+                    Admin Role
+                </label>
             </div>
-
             <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
         </EditForm>
+
     </div>
     <div class="col-md-6 col-md-offset-2">
         <section>
@@ -67,7 +67,6 @@
 
 @code {
     private IEnumerable<IdentityError>? identityErrors;
-
     [SupplyParameterFromForm]
     private InputModel Input { get; set; } = new();
 
@@ -75,7 +74,6 @@
     private string? ReturnUrl { get; set; }
 
     private string? Message => identityErrors is null ? null : $"Error: {string.Join(", ", identityErrors.Select(error => error.Description))}";
-    private bool isAdmin = true;
 
     public async Task RegisterUser(EditContext editContext)
     {
@@ -92,14 +90,13 @@
             identityErrors = result.Errors;
             return;
         }
-        if (isAdmin)
+        if (Input.IsAdmin)
         {
             await _roleHandler.CreateUserRole(user.Email, "admin", _serviceProvider);
 
         } else
         {
             await _roleHandler.CreateUserRole(user.Email, "member", _serviceProvider);
-
         }
 
         Logger.LogInformation("User created a new account with password.");
@@ -163,5 +160,8 @@
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; } = "";
+
+        [Display(Name = "Admin Role")]
+        public bool IsAdmin { get; set; }
     }
 }
