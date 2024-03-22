@@ -1,0 +1,33 @@
+﻿@using TodoList_Blazor.HelperServies
+<!-- DecryptedInput.razor -->
+@inject AsymmetricHandler _asymmetricHandler;
+<InputText @bind-Value="@DecryptedValue" class="form-control" @oninput="HandleValueChanged"></InputText>
+
+@code {
+    [Parameter]
+    public string Value { get; set; }
+
+    [Parameter]
+    public EventCallback<string> ValueChanged { get; set; }
+    [Parameter]
+    public string EncryptedValue { get; set; }
+
+    private string DecryptedValue { get; set; }
+
+    protected override void OnInitialized()
+    {
+        DecryptedValue = Decrypt(EncryptedValue);
+    }
+
+    private string Decrypt(string encryptedValue)
+    {
+        return _asymmetricHandler.DecryptAsymmetric(encryptedValue);
+    }
+
+    private async Task HandleValueChanged(ChangeEventArgs e)
+    {
+        DecryptedValue = e.Value.ToString();
+        EncryptedValue = _asymmetricHandler.EncryptAsymmetric(DecryptedValue);
+        await ValueChanged.InvokeAsync(EncryptedValue);
+    }
+}

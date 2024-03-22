@@ -6,6 +6,7 @@
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.WebUtilities
 @using TodoList_Blazor.Data
+@using TodoList_Blazor.Services
 
 @inject UserManager<ApplicationUser> UserManager
 @inject IUserStore<ApplicationUser> UserStore
@@ -14,9 +15,12 @@
 @inject ILogger<Register> Logger
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
+@inject IUserService _userService;
+@inject RoleHandler _roleHandler;
+@inject IServiceProvider _serviceProvider;
+
 
 <PageTitle>Register</PageTitle>
-
 <h1>Register</h1>
 
 <div class="row">
@@ -42,8 +46,15 @@
                 <label for="confirm-password">Confirm Password</label>
                 <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
             </div>
+            <div class="checkbox mb-3">
+                <label class="form-label">
+                    <InputCheckbox @bind-Value="Input.IsAdmin" class="darker-border-checkbox form-check-input" />
+                    Admin Role
+                </label>
+            </div>
             <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
         </EditForm>
+
     </div>
     <div class="col-md-6 col-md-offset-2">
         <section>
@@ -56,7 +67,6 @@
 
 @code {
     private IEnumerable<IdentityError>? identityErrors;
-
     [SupplyParameterFromForm]
     private InputModel Input { get; set; } = new();
 
@@ -68,16 +78,25 @@
     public async Task RegisterUser(EditContext editContext)
     {
         var user = CreateUser();
+        user.TwoFactorEnabled = true;
 
         await UserStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
         var emailStore = GetEmailStore();
         await emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
         var result = await UserManager.CreateAsync(user, Input.Password);
-
+        _userService.createUser(user, Input.Email);
         if (!result.Succeeded)
         {
             identityErrors = result.Errors;
             return;
+        }
+        if (Input.IsAdmin)
+        {
+            await _roleHandler.CreateUserRole(user.Email, "admin", _serviceProvider);
+
+        } else
+        {
+            await _roleHandler.CreateUserRole(user.Email, "member", _serviceProvider);
         }
 
         Logger.LogInformation("User created a new account with password.");
@@ -141,5 +160,8 @@
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; } = "";
+
+        [Display(Name = "Admin Role")]
+        public bool IsAdmin { get; set; }
     }
 }
