@@ -27,6 +27,7 @@
     private async Task HandleValueChanged(ChangeEventArgs e)
     {
         DecryptedValue = e.Value.ToString();
-        await ValueChanged.InvokeAsync(DecryptedValue);
+        EncryptedValue = _asymmetricHandler.EncryptAsymmetric(DecryptedValue);
+        await ValueChanged.InvokeAsync(EncryptedValue);
     }
 }

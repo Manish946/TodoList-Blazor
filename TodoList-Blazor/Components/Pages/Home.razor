@@ -21,6 +21,10 @@
 @inject IServiceProvider _serviceProvider;
 
 <PageTitle>H5 TODOLIST</PageTitle>
+<AuthorizeView>
+    <Authorized>
+
+
 
 <div>
     <h1>User: @username </h1>
@@ -123,7 +127,8 @@
         }
     </div>
 </div>
-
+    </Authorized>
+</AuthorizeView>
 
 @code {
     private string? username;
@@ -148,9 +153,11 @@
         // Retrieves username and current user based on the authentication state
         username = user.Identity.Name;
         currentUser = _userService.getUserByUserName(username);
-
-        // Fetches todo lists for the current user
-        fetchTodoList(currentUser.Id);
+        if (user.Identity.IsAuthenticated)
+        {
+            // Fetches todo lists for the current user
+            fetchTodoList(currentUser.Id);
+        }
     }
 
     // Registers CPR for the current user
@@ -218,7 +225,6 @@
     // Updates a todo item in the list
     private void updateTodoItem(TodoList todoList)
     {
-        todoList.Item = _asymmetricHandler.EncryptAsymmetric(todoList.Item);
         _todoListService.updateTodoList(todoList);
         editIndex = -1;
     }
