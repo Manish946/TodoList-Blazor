@@ -89,20 +89,20 @@ builder.Services.Configure<IdentityOptions>(options =>
 // Get User Folder
 string userFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 userFolder = Path.Combine(userFolder, ".aspnet");
-userFolder = Path.Combine(userFolder, ".https");
-userFolder = Path.Combine(userFolder, ".h5test.pfx");
-builder.Configuration.GetSection("Kestral:Endpoints:Https:Certificate:Path").Value = userFolder;
-string KastrelCertPassword = builder.Configuration.GetValue<string>("KastrelCertPassword");
-builder.Configuration.GetSection("Kestral:Endpoints:Https:Certificate:password").Value = KastrelCertPassword;
+userFolder = Path.Combine(userFolder, "https");
+userFolder = Path.Combine(userFolder, "h5test.pfx");
+builder.Configuration.GetSection("Kestrel:Endpoints:Https:Certificate:Path").Value = userFolder;
+string KestrelCertPassword = builder.Configuration.GetValue<string>("KestrelCertPassword");
+builder.Configuration.GetSection("Kestrel:Endpoints:Https:Certificate:password").Value = KestrelCertPassword;
 
-//builder.WebHost.UseKestrel((context, serverOptions) =>
-//{
-//	serverOptions.Configure(context.Configuration.GetSection("Kestral"))
-//		.Endpoint("HTTPS", listenOptions =>
-//		{
-//			listenOptions.HttpsOptions.SslProtocols = System.Security.Authentication.SslProtocols.Tls13;
-//		});
-//});
+builder.WebHost.UseKestrel((context, serverOptions) =>
+{
+	serverOptions.Configure(context.Configuration.GetSection("Kestrel"))
+		.Endpoint("HTTPS", listenOptions =>
+		{
+			listenOptions.HttpsOptions.SslProtocols = System.Security.Authentication.SslProtocols.Tls12;
+		});
+});
 
 var app = builder.Build();
 
