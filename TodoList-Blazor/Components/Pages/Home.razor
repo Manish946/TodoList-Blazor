@@ -22,111 +22,116 @@
 
 <PageTitle>H5 TODOLIST</PageTitle>
 <AuthorizeView>
+    <NotAuthorized>
+        <Alert Color="AlertColor.Danger" Dismissable="false"> <Icon Name="IconName.ExclamationTriangleFill" class="me-2"></Icon>You are not logged in, please login to use the application </Alert>
+    </NotAuthorized>
     <Authorized>
+        <div>
+            <Alert Color="AlertColor.Success" Dismissable="false">
+                <Icon Name="IconName.CheckCircleFill" class="me-2"></Icon>
+                User: @username. Your Role : 
+                    @if (isAdmin)
+                    {
+                        <span>Admin</span>
+                    }
+                    else
+                    {
+                        <span>Member</span>
+                    }
+            </Alert>
+            <h1 </h1>
 
 
-
-<div>
-    <h1>User: @username </h1>
-    @if (isAdmin)
-    {
-        <h1>Admin</h1>
-    }
-    else
-    {
-        <h1>Member</h1>
-    }
-
-    <div>
-        @if (cprEntered == false)
-        {
-            <Card Style="width:29rem;">
-                <CardBody>
-                    <label class="form-label">ENTER YOUR CPR NUMBER</label>
-                    <NumberInput TValue="long?" @bind-Value="cprInput" Placeholder="CPR NUMBER" />
-                    <Button Style="margin-top:10px" @onclick="registerCPR" Color="ButtonColor.Primary"> Sumbit </Button>
-                    <p style="margin-top:10px; color:red">@errorMessage</p>
-                </CardBody>
-            </Card>
-        }
-        else
-        {
-            <Card Style="width:42rem;">
-                <CardBody>
-                    <div class="form-group row mb-3">
-                        <div class="col-md-9">
-                            <InputText class="form-control" @bind-Value="todoItemInput" @onkeyup="addTodoItem" DisplayName=" TO DO LIST ITEM"></InputText>
-                        </div>
-                        <Button class="col-md-3" @onclick="addTodoItem" Color="ButtonColor.Primary"> Add TodoList </Button>
-                    </div>
-                    <Card Style="width:40rem;">
-                        <CardHeader Color="CardColor.Dark">
-                            TO DO LISTS
-                        </CardHeader>
+            <div>
+                @if (cprEntered == false)
+                {
+                    <Card Style="width:29rem;">
                         <CardBody>
-                            @if (todoLists.Count != 0)
-                            {
-                                @foreach (var todo in todoLists)
-                                {
-                                    <Card Color="CardColor.Light" Class="mb-4">
-                                        <CardBody>
-                                            @if (isActiveEdit(todo))
-                                            {
-                                                <DecryptedInput EncryptedValue="@todo.Item" ValueChanged="(newValue) => todo.Item = newValue" />
-                                            }
-                                            else
-                                            {
-                                                @if (todo.IsCompleted)
-                                                {
-                                                    <CardTitle><s>@decryptTodoItem(todo)</s> </CardTitle>
-                                                }
-                                                else
-                                                {
-                                                    <CardTitle>@decryptTodoItem(todo)</CardTitle>
-                                                }
-                                            }
-                                        </CardBody>
-                                        <CardFooter style="display:flex; column-gap:10px;">
-                                            <Button Class="mr-5" @onclick="(args) => deleteTodoItem(todo)" Color="ButtonColor.Danger"> Delete </Button>
-
-                                            @if (isActiveEdit(todo))
-                                            {
-                                                <Button Class="mr-5" @onclick="(args) => updateTodoItem(todo)" Color="ButtonColor.Info"> Save </Button>
-                                            }
-                                            else
-                                            {
-                                                <Button Class="mr-5" @onclick="(args) => enableEdit(todoLists.IndexOf(todo))" Color="ButtonColor.Info"> Edit </Button>
-                                            }
-
-                                            @if (!todo.IsCompleted)
-                                            {
-                                                <Button Class="mr-5" @onclick="(args) => toggleTodoItemCompleted(todo)" Color="ButtonColor.Warning">Complete</Button>
-                                            }
-                                            else
-                                            {
-                                                <Button Class="mr-5" @onclick="(args) => toggleTodoItemCompleted(todo)" Color="ButtonColor.Success">Completed</Button>
-                                            }
-                                        </CardFooter>
-                                    </Card>
-                                }
-                            }
-                            else
-                            {
-                                <CardText>TO DO LIST IS EMPTY</CardText>
-                            }
-
+                            <label class="form-label">ENTER YOUR CPR NUMBER</label>
+                            <NumberInput TValue="long?" @bind-Value="cprInput" Placeholder="CPR NUMBER" />
+                            <Button Style="margin-top:10px" @onclick="registerCPR" Color="ButtonColor.Primary"> Sumbit </Button>
+                            <p style="margin-top:10px; color:red">@errorMessage</p>
                         </CardBody>
                     </Card>
-                </CardBody>
-            </Card>
+                }
+                else
+                {
+                    <Card Style="width:42rem;">
+                        <CardBody>
+                            <div class="form-group row mb-3">
+                                <div class="col-md-9">
+                                    <InputText class="form-control" @bind-Value="todoItemInput" @onkeyup="addTodoItem" DisplayName=" TO DO LIST ITEM"></InputText>
+                                </div>
+                                <Button class="col-md-3" @onclick="addTodoItem" Color="ButtonColor.Primary"> Add TodoList </Button>
+                            </div>
+                            <Card Style="width:40rem;">
+                                <CardHeader Color="CardColor.Dark">
+                                    TO DO LISTS
+                                </CardHeader>
+                                <CardBody>
+                                    @if (todoLists.Count != 0)
+                                    {
+                                        @foreach (var todo in todoLists)
+                                        {
+                                            <Card Color="CardColor.Light" Class="mb-4">
+                                                <CardBody>
+                                                    @if (isActiveEdit(todo))
+                                                    {
+                                                        <DecryptedInput EncryptedValue="@todo.Item" ValueChanged="(newValue) => todo.Item = newValue" />
+                                                    }
+                                                    else
+                                                    {
+                                                        @if (todo.IsCompleted)
+                                                        {
+                                                            <CardTitle><s>@decryptTodoItem(todo)</s> </CardTitle>
+                                                        }
+                                                        else
+                                                        {
+                                                            <CardTitle>@decryptTodoItem(todo)</CardTitle>
+                                                        }
+                                                    }
+                                                </CardBody>
+                                                <CardFooter style="display:flex; column-gap:10px;">
+                                                    <Button Class="mr-5" @onclick="(args) => deleteTodoItem(todo)" Color="ButtonColor.Danger"> Delete </Button>
 
-            @if (isAdmin)
-            {
-                <Button Style="margin-top:10px" @onclick="clearAll" Color="ButtonColor.Danger">Clear All To do List</Button>
-            }
-        }
-    </div>
-</div>
+                                                    @if (isActiveEdit(todo))
+                                                    {
+                                                        <Button Class="mr-5" @onclick="(args) => updateTodoItem(todo)" Color="ButtonColor.Info"> Save </Button>
+                                                    }
+                                                    else
+                                                    {
+                                                        <Button Class="mr-5" @onclick="(args) => enableEdit(todoLists.IndexOf(todo))" Color="ButtonColor.Info"> Edit </Button>
+                                                    }
+
+                                                    @if (!todo.IsCompleted)
+                                                    {
+                                                        <Button Class="mr-5" @onclick="(args) => toggleTodoItemCompleted(todo)" Color="ButtonColor.Warning">Complete</Button>
+                                                    }
+                                                    else
+                                                    {
+                                                        <Button Class="mr-5" @onclick="(args) => toggleTodoItemCompleted(todo)" Color="ButtonColor.Success">Completed</Button>
+                                                    }
+                                                </CardFooter>
+                                            </Card>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <CardText>TO DO LIST IS EMPTY</CardText>
+                                    }
+
+                                </CardBody>
+                            </Card>
+                        </CardBody>
+                    </Card>
+
+                    @if (isAdmin)
+                    {
+                        <Button Style="margin-top:10px" @onclick="clearAll" Color="ButtonColor.Danger">Clear All To do List</Button>
+                    }
+                }
+            </div>
+        </div>
     </Authorized>
 </AuthorizeView>
 
